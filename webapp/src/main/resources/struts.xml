@@ -516,6 +516,30 @@
 			
 		</action>
 		
+        <action name="storyResultAction" class="storyImportAction" method="storyImport">
+			<interceptor-ref name="exception"/>
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="fileUpload">
+       			<param name="allowedTypes">application/xml,text/xml</param>
+       			<param name="maximumSize">104857600</param>
+  			</interceptor-ref> 
+            <interceptor-ref name="params">
+                <param name="excludeParams">dojo\..*,^struts\..*</param>
+            </interceptor-ref>
+            <interceptor-ref name="validation">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+            <interceptor-ref name="workflow">
+                <param name="excludeMethods">input,back,cancel,browse</param>
+            </interceptor-ref>
+    
+            <result name="success" type="chain">contextView</result>
+            
+            <result name="none" type="chain">contextView</result>
+            
+			<result name="error">/WEB-INF/jsp/storyImportError.jsp</result>
+			
+		</action>
 	</package>
 	<constant name="struts.multipart.maxSize" value="104857600" />
 </struts>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AudioSequences>
+    <Sequence finish="8249.0" attendee="alex" question="question" Comment="comment">
+        <Item>Competences</Item>
+        <Item>2</Item>
+        <Item>3</Item>
+        <Item>5</Item>
+    </Sequence>
+        <Sequence finish="8249.0" attendee="alex" question="question" Comment="Bonjour Bob">
+        <Item>Competences</Item>
+        <Item>2</Item>
+        <Item>3</Item>
+        <Item>7</Item>
+    </Sequence>
+    
+</AudioSequences>

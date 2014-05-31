@@ -1,4 +1,5 @@
 <%@ include file="./inc/_taglibs.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <%
 org.joda.time.DateTime now = new org.joda.time.DateTime();
@@ -47,7 +48,7 @@ pageContext.setAttribute("defaultEndDate", now.plusMonths(3));
 }
 .storyList li:hover {
   font-weight: bold;
-}.
+}
 .ui-draggable-dragging {
   list-style-type: none !important;
   white-space: normal !important;
@@ -264,6 +265,8 @@ $(document).ready(function() {
         alt="Backlogs" src="static/img/leaf_stories.png" /> Project planning</span></a></li>
   <li class=""><a href="#projects"><span><img
         alt="Projects" src="static/img/backlog.png" /> Projects</span></a></li>
+  <li class=""><a href="#import"><span><img
+	    alt="Edit" src="static/img/add_theme.png" /> Import stories from MM-Project</span></a></li> 
   <li id="searchByText" style="float: right;"> </li>
 </ul>
 
@@ -340,7 +343,15 @@ $(document).ready(function() {
     </c:choose>
   </div>
 </form>
-
+  <div class="details" id="import">
+      <p class="instructionText">Import XML file from MM-Project mobile app to add stories description .</p>
+      <p><img src="static/img/utt.png" width="50" heigth="50"></p>
+          <s:form action="storyResultAction" namespace="/" method="POST" enctype="multipart/form-data">
+            <s:file name="fileUpload" label="Select an xml to upload" size="40" />
+            <s:submit value="Import Stories Description" name="submit" 
+            onClick="return confirm('Your current stories will be modified. Are you sure you want to import more data to them?');"/>
+          </s:form>
+  </div>
 </div>
 
 

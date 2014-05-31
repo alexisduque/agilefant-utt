@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import com.typesafe.config.Config;
 
 import fi.hut.soberit.agilefant.business.AuthorizationBusiness;
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
@@ -28,6 +29,7 @@ import fi.hut.soberit.agilefant.security.SecurityUtil;
 @Component("backlogAction")
 @Scope("prototype")
 public class BacklogAction extends ActionSupport {
+
     private static final long serialVersionUID = 8061288993804046816L;
 
     private int backlogId;
@@ -35,45 +37,49 @@ public class BacklogAction extends ActionSupport {
     private Set<Integer> userIds = new HashSet<Integer>();
 
     private Backlog backlog;
-    
+
     private Collection<Story> stories = new ArrayList<Story>();
-    
-    private Collection<Backlog> backlogs = new ArrayList<Backlog>(); 
+
+    private Collection<Backlog> backlogs = new ArrayList<Backlog>();
 
     @Autowired
     private BacklogBusiness backlogBusiness;
 
     @Autowired
     private IterationBusiness iterationBusiness;
-    
+
     @Autowired
     private AuthorizationBusiness authorizationBusiness;
     
+    @Autowired
+    private Config config;
+
     public String retrieve() {
         backlog = backlogBusiness.retrieve(backlogId);
         return Action.SUCCESS;
     }
-    
+
     public String retrieveStories() {
         backlog = backlogBusiness.retrieve(backlogId);
         stories = backlog.getStories();
         return Action.SUCCESS;
     }
-    
+
     public String addAssignees() {
         this.backlogBusiness.addAssignees(backlogId, userIds);
         this.backlog = this.backlogBusiness.retrieve(backlogId);
         return Action.SUCCESS;
     }
-    
+
     /**
      * Gets all sub backlogs or all products if backlog not found.
+     *
      * @return
      */
     public String retrieveSubBacklogs() {
         if (backlogId == 0) {
             Collection<Backlog> canditateBacklogs = backlogBusiness.retrieveAllStandAloneIterations();
-            
+
             // Check team access for standalone iterations.
             for (Iterator<Backlog> iter = canditateBacklogs.iterator(); iter.hasNext();) {
                 Backlog backlog = iter.next();
@@ -81,30 +87,25 @@ public class BacklogAction extends ActionSupport {
                     backlogs.add(backlog);
                 }
             }
-        }
-        else {
+        } else {
             backlog = backlogBusiness.retrieveIfExists(backlogId);
             backlogs = backlogBusiness.getChildBacklogs(backlog);
         }
         return Action.SUCCESS;
     }
 
-
     public String resolveResult() {
         backlog = backlogBusiness.retrieveIfExists(backlogId);
         if (backlog instanceof Product) {
             return "product";
-        }
-        else if (backlog instanceof Project) {
+        } else if (backlog instanceof Project) {
             return "project";
-        }
-        else if (backlog instanceof Iteration) {
+        } else if (backlog instanceof Iteration) {
             return "iteration";
         }
         return "selectBacklog";
     }
-    
-    
+
     public void setBacklogBusiness(BacklogBusiness backlogBusiness) {
         this.backlogBusiness = backlogBusiness;
     }
@@ -116,7 +117,7 @@ public class BacklogAction extends ActionSupport {
     public void setUserIds(Set<Integer> userIds) {
         this.userIds = userIds;
     }
-    
+
     public Backlog getBacklog() {
         return backlog;
     }
@@ -128,12 +129,16 @@ public class BacklogAction extends ActionSupport {
     public void setBacklogId(int backlogId) {
         this.backlogId = backlogId;
     }
-    
+
     public Collection<Story> getStories() {
         return stories;
     }
 
     public Collection<Backlog> getBacklogs() {
         return backlogs;
-    }    
+    }
+
+    public Boolean getImportEnabled() {
+        return this.config.getBoolean("agilefant.import.enabled");
+    }
 }

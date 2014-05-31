@@ -1,4 +1,5 @@
 <%@ include file="./inc/_taglibs.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <struct:htmlWrapper navi="backlog">
 <jsp:body>
@@ -88,6 +89,8 @@ $(document).ready(function() {
 				alt="Edit" src="static/img/leaf_stories.png" /> Leaf stories</span></a></li>
   <li class=""><a href="#iterations"><span><img
 				alt="Edit" src="static/img/backlog.png" /> Iterations</span></a></li>
+  <li class=""><a href="#import"><span><img
+				alt="Edit" src="static/img/add_theme.png" /> Import stories from MM-Project</span></a></li>              
   <li id="searchByText" style="float: right;"> </li>
 </ul>
 
@@ -122,7 +125,15 @@ $(document).ready(function() {
   		</div>
   </div>
 </form>
-
+  <div class="details" id="import">
+      <p class="instructionText">Import XML file from MM-Project mobile app to add stories description .</p>
+      <p><img src="static/img/utt.png" width="50" heigth="50"></p>
+          <s:form action="storyResultAction" namespace="/" method="POST" enctype="multipart/form-data">
+            <s:file name="fileUpload" label="Select an xml to upload" size="40" />
+            <s:submit value="Import Stories Description" name="submit" 
+            onClick="return confirm('Your current stories will be modified. Are you sure you want to import more data to them?');"/>
+          </s:form>
+  </div>
 </div>
 
 
