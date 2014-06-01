@@ -1,10 +1,22 @@
 <%@ include file="./inc/_taglibs.jsp"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <struct:htmlWrapper navi="backlog">
 <jsp:body>
 
 <aef:backlogBreadCrumb backlog="${iteration}" />
 
+<style>
+.details h1 {
+  display:inline;
+  color:#2E6E9E;
+  font-size: 25pt;
+}
+.details img {
+  display: inline;
+  margin-right : 15px;
+}
+</style>
 
 <div class="structure-main-block" id="backlogInfo">
 <ul class="backlogTabs">
@@ -12,6 +24,8 @@
     alt="Edit" src="static/img/info.png" /> Info</span></a></li>
   <li class=""><a href="#backlogAssignees_cont"><span><img
     alt="Edit" src="static/img/team.png" /> Workload</span></a></li>
+  <li class=""><a href="#import"><span><img
+     alt="Edit" src="static/img/add_theme.png" /> MM-Project - Import/Export Stories</span></a></li> 
   <!-- <li class=""><a href="#iterationHistory"><span>History</span></a></li> --> <!-- Hide history tab until it's fixed to show right info -->
   <li id="iterationActions" class="ui-state-disabled dynamictable-captionaction ui-corner-all" style="float: right; opacity: 1 !important; filter: alpha(opacity = 100) !important; border-width: 1px !important;">
     Actions
@@ -36,6 +50,30 @@
     Iteration availability denotes how unassigned load should be divided within this iteration. If all assignees have the same iteration availability they will receive the same amount of unassigned load.
     <br/>
     Personal adjustment adjusts the iteration baseline load for each user.
+  </div>
+<div class="details" id="import">
+      <div style="display:inline;vertical-align: middle">
+      <img src="static/img/utt.png" width="50" heigth="50">
+      <h1>MM Project</h1>
+      </div>
+      <c:choose>
+        <c:when test="${empty stories}">
+            <p class="instructionText">This Iteration hasn't stories. Create at least one story before.</p> 
+        </c:when>
+        <c:otherwise>
+            <p class="instructionText">Export stories from this iteration to Items XML file for MM-Project mobile app.</p> 
+              <form action="generateItemExportIteration.action">
+                  <input type="hidden" value="${iteration.id}" name="id" />
+                  <input type="submit" value="Export Stories from iteration ${iteration.name}" class="dynamics-button" />
+              </form>
+            <p class="instructionText">Import XML file from MM-Project mobile app to add stories description .</p>
+            <s:form action="storyResultAction" namespace="/" method="POST" enctype="multipart/form-data">
+              <s:file name="fileUpload" label="Select an xml to upload" size="40" />
+              <s:submit class="dynamics-button" value="Import Stories Description" name="submit" 
+              onClick="return confirm('Your current stories will be modified. Are you sure you want to import more data to them?');"/>
+            </s:form>
+        </c:otherwise>
+      </c:choose>
   </div>
   <!-- <div class="details" id="iterationHistory">
     <div style="text-align:center; vertical-align: middle;">

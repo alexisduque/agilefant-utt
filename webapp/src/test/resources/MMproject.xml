@@ -8,9 +8,9 @@
     </Sequence>
         <Sequence finish="8249.0" attendee="alex" question="question" Comment="Bonjour Bob">
         <Item>Competences</Item>
-        <Item>2</Item>
-        <Item>3</Item>
-        <Item>7</Item>
+        <Item>Story 2</Item>
+        <Item>Story #3</Item>
+        <Item>Story #3</Item>
     </Sequence>
     
 </AudioSequences>

@@ -3,7 +3,7 @@
 <struct:htmlWrapper navi="">
 
 <h2>An error occurred</h2>
-<p>Import story description from MM Project report as failed. 
+<p>Import or Export story description from MM Project report as failed. 
     Maybe your XML file is wrong.
 <br/><a
 	href="javascript:history.back(-1)">Try again</a>

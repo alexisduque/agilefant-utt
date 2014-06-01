@@ -68,6 +68,15 @@ pageContext.setAttribute("defaultEndDate", now.plusMonths(3));
 .timeframe span {
   color: #666;
 }
+.details h1 {
+  display:inline;
+  color:#2E6E9E;
+  font-size: 25pt;
+}
+.details img {
+  display: inline;
+  margin-right : 15px;
+}
 </style>
   
 </jsp:attribute>
@@ -266,7 +275,7 @@ $(document).ready(function() {
   <li class=""><a href="#projects"><span><img
         alt="Projects" src="static/img/backlog.png" /> Projects</span></a></li>
   <li class=""><a href="#import"><span><img
-	    alt="Edit" src="static/img/add_theme.png" /> Import stories from MM-Project</span></a></li> 
+	    alt="Edit" src="static/img/add_theme.png" /> MM-Project - Import/Export Stories</span></a></li> 
   <li id="searchByText" style="float: right;"> </li>
 </ul>
 
@@ -344,13 +353,28 @@ $(document).ready(function() {
   </div>
 </form>
   <div class="details" id="import">
-      <p class="instructionText">Import XML file from MM-Project mobile app to add stories description .</p>
-      <p><img src="static/img/utt.png" width="50" heigth="50"></p>
-          <s:form action="storyResultAction" namespace="/" method="POST" enctype="multipart/form-data">
-            <s:file name="fileUpload" label="Select an xml to upload" size="40" />
-            <s:submit value="Import Stories Description" name="submit" 
-            onClick="return confirm('Your current stories will be modified. Are you sure you want to import more data to them?');"/>
-          </s:form>
+      <div style="display:inline;vertical-align: middle">
+      <img src="static/img/utt.png" width="50" heigth="50">
+      <h1>MM Project</h1>
+      </div>
+      <c:choose>
+        <c:when test="${empty stories}">
+            <p class="instructionText">This product hasn't stories. Create at least one story before.</p> 
+        </c:when>
+        <c:otherwise>
+            <p class="instructionText">Export stories from Backlog to Items XML file for MM-Project mobile app.</p> 
+              <form action="generateItemExport.action">
+                  <input type="hidden" value="${product.id}" name="id" />
+                  <input type="submit" value="Export Stories from product ${product.name}" class="dynamics-button" />
+              </form>
+            <p class="instructionText">Import XML file from MM-Project mobile app to add stories description .</p>
+            <s:form action="storyResultAction" namespace="/" method="POST" enctype="multipart/form-data">
+              <s:file name="fileUpload" label="Select an xml to upload" size="40" />
+              <s:submit class="dynamics-button" value="Import Stories Description" name="submit" 
+              onClick="return confirm('Your current stories will be modified. Are you sure you want to import more data to them?');"/>
+            </s:form>
+        </c:otherwise>
+      </c:choose>
   </div>
 </div>
 

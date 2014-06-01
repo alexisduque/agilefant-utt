@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,9 +33,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 // ApplicationContext will be loaded from "/applicationContext.xml" and "/applicationContext-test.xml"
 // in the root of the classpath
 @ContextConfiguration
-public class XmlSequenceImportTest {
+public class XmlSequenceImportExportTest {
 
-    public XmlSequenceImportTest() {
+    public XmlSequenceImportExportTest() {
     }
 
     @BeforeClass
@@ -52,7 +54,7 @@ public class XmlSequenceImportTest {
     public void tearDown() {
     }
     @Autowired
-    private XmlSequenceImport instance;
+    private XmlSequenceImportExport instance;
 
     /**
      * Test of convertFromXMLToObject method, of class XmlSequenceImport.
@@ -81,7 +83,7 @@ public class XmlSequenceImportTest {
             seqList.add(seq);
 
             expResult.setSequence(seqList);
-            AudioSequences result = (AudioSequences) instance.convertFromXMLToObject(os);
+            AudioSequences result = (AudioSequences) instance.convertFromXMLToAudioSequence(os);
             Sequence seqResult = result.getSequence().get(0);
 
             String itemR = seqResult.getItem().get(1);
@@ -98,6 +100,20 @@ public class XmlSequenceImportTest {
     }
 
     @Test
+    public void testParseItem() throws Exception {
+        int test1 = parseItem("story 21");
+        int test2 = parseItem("Story 2");
+        int test3 = parseItem("Story #2");
+        int test4 = parseItem("story #29");
+        int test5 = parseItem("storyD2");
+        assertEquals(21, test1);
+        assertEquals(2, test2);
+        assertEquals(2, test3);
+        assertEquals(29, test4);
+        assertEquals(0, test5);
+    }
+
+    @Test
     public void testReadingXML() throws Exception {
         int id = 0;
         String comment = "";
@@ -107,7 +123,7 @@ public class XmlSequenceImportTest {
         FileInputStream os = null;
         try {
             os = new FileInputStream(new File(resource));
-            AudioSequences audioSeq = (AudioSequences) instance.convertFromXMLToObject(os);
+            AudioSequences audioSeq = (AudioSequences) instance.convertFromXMLToAudioSequence(os);
             ArrayList<Sequence> sequenceList = audioSeq.getSequence();
             Iterator<Sequence> seqItr = sequenceList.iterator();
             while (seqItr.hasNext()) {
@@ -117,23 +133,37 @@ public class XmlSequenceImportTest {
                 Iterator<String> itemItr = itemList.iterator();
                 while (itemItr.hasNext()) {
                     String item = itemItr.next();
-                    if (StringUtils.isNumeric(item)) {
-                        try {
-                            id = Integer.parseInt(item);
-
-                        } catch (NumberFormatException e) {
-                        }
-                    }
+                    id = parseItem(item);
                 }
             }
-            assertEquals(id, 2);
-            assertEquals(comment, "comment");
+            assertEquals(3, id);
+            assertEquals(comment, "Bonjour Bob");
 
         } finally {
             if (os != null) {
                 os.close();
             }
         }
+    }
+
+    public int parseItem(String item) {
+        String trim = item.trim().toLowerCase();
+        if (trim.matches("story #\\d*")) {
+            String idString = trim.split("#")[1];
+            System.out.println(idString);
+            if (StringUtils.isNumeric(idString)) {
+                return Integer.parseInt(idString);
+            }
+        }
+        if (trim.matches("story \\d*")) {
+            String idString = trim.split(" ")[1];
+            System.out.println(idString);
+            if (StringUtils.isNumeric(idString)) {
+                return Integer.parseInt(idString);
+            }
+        }
+        System.out.println("Pattern not matched");
+        return 0;
     }
 
 }
