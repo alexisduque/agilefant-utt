@@ -10,7 +10,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <bean name="asyncTaskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
     <!--Add for XML parsing -->
     <bean id="xstreamMarshallerBean" class="com.thoughtworks.xstream.XStream" />  
-    <bean id="XmlSequenceImport" class="fi.hut.soberit.agilefant.exportimport.XmlSequenceImport" >
+    <bean id="XmlSequenceImportExport" class="fi.hut.soberit.agilefant.exportimport.XmlSequenceImportExport" >
         <property name="xstream" ref="xstreamMarshallerBean" />
     </bean>
  

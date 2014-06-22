@@ -39,7 +39,7 @@ public class MMImportExportBusinessImpl implements MMImportExportBusiness {
     @Autowired
     private StoryDAO storyDAO;
     private String errorStacktrace;
-
+    
     public void importStory(FileInputStream xml) {
         try {
             AudioSequences audioSeq = (AudioSequences) converter.convertFromXMLToAudioSequence(xml);
@@ -49,21 +49,23 @@ public class MMImportExportBusinessImpl implements MMImportExportBusiness {
                 Sequence sequence = seqItr.next();
                 String comment = sequence.getComment();
                 ArrayList<String> itemList = sequence.getItem();
-                Iterator<String> itemItr = itemList.iterator();
-                while (itemItr.hasNext()) {
-                    String item = itemItr.next();
-                    int id = parseItem(item);
-                    if (id > 0) {
-                        if (storyDAO.exists(id)) {
-                            Story story = storyDAO.get(id);
-                            if (story != null) {
-                                String storyDesc = story.getDescription();
-                                if (storyDesc.length() > 1) {
-                                    story.setDescription(storyDesc + "<br>" + comment);
-                                } else {
-                                    story.setDescription(comment);
+                if (itemList != null) {
+                    Iterator<String> itemItr = itemList.iterator();
+                    while (itemItr.hasNext()) {
+                        String item = itemItr.next();
+                        int id = parseItem(item);
+                        if (id > 0) {
+                            if (storyDAO.exists(id)) {
+                                Story story = storyDAO.get(id);
+                                if (story != null) {
+                                    String storyDesc = story.getDescription();
+                                    if (storyDesc != null) {
+                                        story.setDescription(storyDesc + "<br>" + comment);
+                                    } else {
+                                        story.setDescription(comment);
+                                    }
+                                    storyDAO.store(story);
                                 }
-                                storyDAO.store(story);
                             }
                         }
                     }

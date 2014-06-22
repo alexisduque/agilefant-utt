@@ -136,7 +136,7 @@ public class XmlSequenceImportExportTest {
                     id = parseItem(item);
                 }
             }
-            assertEquals(3, id);
+            assertEquals(4, id);
             assertEquals(comment, "Bonjour Bob");
 
         } finally {
